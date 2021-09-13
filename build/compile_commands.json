@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/wys/slam/相机内参标定/OpenCV/calibMono/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -isystem /usr/include/opencv  -g   -std=gnu++11 -o CMakeFiles/calibMono.dir/calibration.cpp.o -c /home/wys/slam/相机内参标定/OpenCV/calibMono/calibration.cpp",
+  "file": "/home/wys/slam/相机内参标定/OpenCV/calibMono/calibration.cpp"
+},
+{
+  "directory": "/home/wys/slam/相机内参标定/OpenCV/calibMono/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -isystem /usr/include/opencv  -g   -std=gnu++11 -o CMakeFiles/testreadimage.dir/testreadimage.cpp.o -c /home/wys/slam/相机内参标定/OpenCV/calibMono/testreadimage.cpp",
+  "file": "/home/wys/slam/相机内参标定/OpenCV/calibMono/testreadimage.cpp"
+}
+]
