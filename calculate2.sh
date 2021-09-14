@@ -17,10 +17,7 @@
 # 	-@input_data=${input_data}
 
 
-# #!/bin/bash
-# cd build 
-# ./calibMono -w=4 -h=7 -s=0.2 -o=camera.yml ../imagelist2.xml
-
 #!/bin/bash
 cd build 
-./calibMono -w=6 -h=9 -s=0.2 -o=camera.yml ../imagelist.xml
+./calibMono -w=4 -h=7 -s=0.2 -o=camera.yml ../imagelist2.xml
+

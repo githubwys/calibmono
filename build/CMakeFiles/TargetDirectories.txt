@@ -1,4 +1,4 @@
-/home/wys/slam/相机内参标定/OpenCV/calibMono/build/CMakeFiles/rebuild_cache.dir
-/home/wys/slam/相机内参标定/OpenCV/calibMono/build/CMakeFiles/edit_cache.dir
-/home/wys/slam/相机内参标定/OpenCV/calibMono/build/CMakeFiles/calibMono.dir
-/home/wys/slam/相机内参标定/OpenCV/calibMono/build/CMakeFiles/testreadimage.dir
+/home/wys/slam/camera-calib/calibmono/build/CMakeFiles/rebuild_cache.dir
+/home/wys/slam/camera-calib/calibmono/build/CMakeFiles/edit_cache.dir
+/home/wys/slam/camera-calib/calibmono/build/CMakeFiles/calibMono.dir
+/home/wys/slam/camera-calib/calibmono/build/CMakeFiles/testreadimage.dir

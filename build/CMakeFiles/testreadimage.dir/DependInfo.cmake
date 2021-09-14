@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/wys/slam/相机内参标定/OpenCV/calibMono/testreadimage.cpp" "/home/wys/slam/相机内参标定/OpenCV/calibMono/build/CMakeFiles/testreadimage.dir/testreadimage.cpp.o"
+  "/home/wys/slam/camera-calib/calibmono/testreadimage.cpp" "/home/wys/slam/camera-calib/calibmono/build/CMakeFiles/testreadimage.dir/testreadimage.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

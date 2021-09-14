@@ -15,6 +15,9 @@
 using namespace cv;
 using namespace std;
 
+string inputFilename = "";
+vector<string> imageList;
+
 const char *usage =
     " \nexample command line for calibration from a live feed.\n"
     "   calibration  -w=4 -h=5 -s=0.025 -o=camera.yml -op -oe\n"
@@ -96,6 +99,44 @@ enum Pattern
     ASYMMETRIC_CIRCLES_GRID
 };
 
+static bool readStringList(const string &filename, vector<string> &l)
+{
+    l.resize(0);
+    FileStorage fs(filename, FileStorage::READ);
+    if (!fs.isOpened())
+        return false;
+    size_t dir_pos = filename.rfind('/');
+    if (dir_pos == string::npos)
+        dir_pos = filename.rfind('\\');
+    FileNode n = fs.getFirstTopLevelNode();
+    if (n.type() != FileNode::SEQ)
+        return false;
+    FileNodeIterator it = n.begin(), it_end = n.end();
+    for (; it != it_end; ++it)
+    {
+        string fname = (string)*it;
+        if (dir_pos != string::npos)
+        {
+            // string fpath = samples::findFile(filename.substr(0, dir_pos + 1) + fname, false);
+            // string fpath = filename.substr(0, dir_pos + 1) + fname;
+            string fpath = fname;
+            if (fpath.empty())
+            {
+                // fpath = samples::findFile(fname);
+                fpath = fname;
+            }
+            fname = fpath;
+        }
+        else
+        {
+            // fname = samples::findFile(fname);
+            fname = fname;
+        }
+        l.push_back(fname);
+    }
+    return true;
+}
+
 //计算重投影误差
 static double computeReprojectionErrors(
     const vector<vector<Point3f>> &objectPoints, //矩阵
@@ -162,7 +203,7 @@ static bool runCalibration(vector<vector<Point2f>> imagePoints, //平面点
                            double &totalAvgErr)
 {
     cameraMatrix = Mat::eye(3, 3, CV_64F);
-    std::cout<<"flags = "<<flags<<std::endl;
+    std::cout << "flags = " << flags << std::endl;
     if (flags & CALIB_FIX_ASPECT_RATIO)
         cameraMatrix.at<double>(0, 0) = aspectRatio;
 
@@ -183,10 +224,22 @@ static bool runCalibration(vector<vector<Point2f>> imagePoints, //平面点
     //                         cameraMatrix, distCoeffs, rvecs, tvecs, newObjPoints,
     //                         flags | CALIB_FIX_K3 | CALIB_USE_LU);
     rms = calibrateCamera(objectPoints, imagePoints, imageSize,
-                          cameraMatrix, distCoeffs, rvecs, tvecs,//distCoeffs:Output vector of distortion coefficients
-                          flags | CV_CALIB_FIX_K3 | CALIB_USE_LU, TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, DBL_EPSILON) );
+                          cameraMatrix, distCoeffs, rvecs, tvecs, //distCoeffs:Output vector of distortion coefficients
+                          flags | CV_CALIB_FIX_K3 | CALIB_USE_LU, TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 30, DBL_EPSILON));
     //CV_CALIB_FIX_K3 5参数 固定k3
     //CV_CALIB_FIX_PRINCIPAL_POINT : 固定cx,cy
+
+    // readStringList(inputFilename, imageList);
+    // for (int i = 0; i < imageList.size(); i++)
+    // {
+    //     cv::Mat distort = imread(imageList[i],1);
+    //     cv::Mat undist;
+    //     cv::undistort(distort, undist,cameraMatrix, distCoeffs);
+    //     cv::resize(undist,undist,cv::Size(undist.cols/2,undist.rows/2),0,0,INTER_LINEAR);
+    //     cv::imshow("undist",undist);
+    //     cv::waitKey(0);
+    // }
+
     printf("RMS error reported by calibrateCamera: %g\n", rms);
 
     bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
@@ -205,9 +258,8 @@ static bool runCalibration(vector<vector<Point2f>> imagePoints, //平面点
     totalAvgErr = computeReprojectionErrors(objectPoints, imagePoints,
                                             rvecs, tvecs, cameraMatrix, distCoeffs, reprojErrs);
 
-
-    std::cout<<"cameraMatrix = "<<cameraMatrix<<std::endl;
-    std::cout<<"distCoeffs = "<<distCoeffs<<std::endl;
+    std::cout << "cameraMatrix = " << cameraMatrix << std::endl;
+    std::cout << "distCoeffs = " << distCoeffs << std::endl;
     return ok;
 }
 
@@ -298,43 +350,7 @@ static void saveCameraParams(const string &filename,
     }
 }
 
-static bool readStringList(const string &filename, vector<string> &l)
-{
-    l.resize(0);
-    FileStorage fs(filename, FileStorage::READ);
-    if (!fs.isOpened())
-        return false;
-    size_t dir_pos = filename.rfind('/');
-    if (dir_pos == string::npos)
-        dir_pos = filename.rfind('\\');
-    FileNode n = fs.getFirstTopLevelNode();
-    if (n.type() != FileNode::SEQ)
-        return false;
-    FileNodeIterator it = n.begin(), it_end = n.end();
-    for (; it != it_end; ++it)
-    {
-        string fname = (string)*it;
-        if (dir_pos != string::npos)
-        {
-            // string fpath = samples::findFile(filename.substr(0, dir_pos + 1) + fname, false);
-            // string fpath = filename.substr(0, dir_pos + 1) + fname;
-            string fpath =  fname;
-            if (fpath.empty())
-            {
-                // fpath = samples::findFile(fname);
-                fpath = fname;
-            }
-            fname = fpath;
-        }
-        else
-        {
-            // fname = samples::findFile(fname);
-            fname = fname;
-        }
-        l.push_back(fname);
-    }
-    return true;
-}
+
 
 static bool runAndSave(const string &outputFilename,
                        const vector<vector<Point2f>> &imagePoints,
@@ -374,7 +390,7 @@ int main(int argc, char **argv)
     float squareSize, aspectRatio = 1;
     Mat cameraMatrix, distCoeffs;
     string outputFilename;
-    string inputFilename = "";
+    //string inputFilename = "";
 
     int i, nframes;
     bool writeExtrinsics, writePoints;
@@ -389,7 +405,7 @@ int main(int argc, char **argv)
     int mode = DETECTION;
     int cameraId = 0;
     vector<vector<Point2f>> imagePoints;
-    vector<string> imageList;
+    //vector<string> imageList;
     Pattern pattern = CHESSBOARD;
 
     // cv::CommandLineParser parser(argc, argv,
